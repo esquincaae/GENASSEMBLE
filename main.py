@@ -1,7 +1,7 @@
-import src.gui.gui as gui
+import src.gui.visual as visual
 
 def main():
-    gui.iniciar_interfaz()
+    visual.iniciar_interfaz()
 
 if __name__ == "__main__":
     main()

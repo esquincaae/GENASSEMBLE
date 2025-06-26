@@ -1,7 +1,8 @@
+from src.ag import ejecutar_ag as ag
 import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
-import src.ag.algoritmo_genetico as algoritmo_genetico
+
 
 tareas_df = pd.read_csv("data/tareas.csv")
 precedencias_df = pd.read_csv("data/precedencias.csv", index_col=0)
@@ -46,9 +47,8 @@ def iniciar_interfaz():
                     dependencias[tarea] = []
 
             # Llamar al algoritmo genético y obtener resultados
-            mejor_individuo, evolucion = algoritmo_genetico.ejecutar_algoritmo_genetico(
-                tareas, tiempos, dependencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion
-            )
+            mejor_individuo, evolucion = ag.ejecutar_algoritmo_genetico(
+                tareas, tiempos, dependencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
 
             messagebox.showinfo("Éxito", "Algoritmo ejecutado correctamente. Revisa las gráficas generadas.")
 
