@@ -10,7 +10,7 @@ def graficar_evolucion(mejores):
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
-    plt.savefig('evolucion_algoritmo.png')
+    plt.savefig('results/evolucion_algoritmo.png')
     plt.show()
 
 def graficar_gantt(individuo, tiempos, num_estaciones, tareas):
@@ -31,7 +31,7 @@ def graficar_gantt(individuo, tiempos, num_estaciones, tareas):
     ax.set_xlabel('Tiempo')
     ax.set_title('Diagrama de Gantt de la mejor solución')
     plt.tight_layout()
-    plt.savefig('gantt_mejor_solucion.png')
+    plt.savefig('results/gantt_mejor_solucion.png')
     plt.show()
 
 def ventana_top_3(poblacion, tiempos, dependencias, fitness_func):
