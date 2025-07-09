@@ -39,14 +39,15 @@ def ventana_top_3(poblacion, tiempos, dependencias, fitness_func):
 
     ventana = tk.Toplevel()
     ventana.title("Top 3 mejores soluciones")
-    ventana.geometry("600x400")
+    ventana.geometry("750x400")
 
     texto = tk.Text(ventana, wrap='word', font=("Consolas", 10))
     texto.pack(fill='both', expand=True)
 
-    texto.insert(tk.END, "📊 Tabla con los 3 mejores resultados:\n\n")
+    texto.insert(tk.END, "Tabla con los 3 mejores resultados:\n\n")
     for i, ind in enumerate(top_3, start=1):
         texto.insert(tk.END, f"🔹 Individuo {i} - Fitness total: {fitness_func(ind, dependencias, tiempos):.2f}\n")
+        ttf = 0
         for est_idx, est in enumerate(ind):
             tareas = ', '.join(est)
             tiempo_total = sum(tiempos[t] for t in est)
@@ -63,19 +64,19 @@ def ventana_resumen_mejor(poblacion, tiempos, dependencias, fitness_func):
 
     ventana = tk.Toplevel()
     ventana.title("Resumen del mejor individuo")
-    ventana.geometry("600x300")
+    ventana.geometry("750x300")
 
     texto = tk.Text(ventana, wrap='word', font=("Consolas", 10))
     texto.pack(fill='both', expand=True)
 
-    texto.insert(tk.END, "📝 Resumen del mejor individuo:\n\n")
+    texto.insert(tk.END, "Resumen del mejor individuo:\n\n")
     for est_idx, est in enumerate(mejor):
         tareas = ', '.join(est)
         tiempo_total = cargas[est_idx]
         texto.insert(tk.END, f"   Estación {est_idx+1}: [{tareas}] - Tiempo total: {tiempo_total}\n")
 
-    texto.insert(tk.END, f"\n⏱️ Makespan total: {makespan}\n")
-    texto.insert(tk.END, f"⚠️ Penalizaciones: {penalizaciones:.2f}\n")
+    texto.insert(tk.END, f"\nMakespan total: {makespan}\n")
+    texto.insert(tk.END, f"Penalizaciones: {penalizaciones:.2f}\n")
 
-    texto.config(state='disabled')  # Solo lectura
+    texto.config(state='disabled')
 

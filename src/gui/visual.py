@@ -3,7 +3,6 @@ import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
 
-
 tareas_df = pd.read_csv("data/tareas.csv")
 precedencias_df = pd.read_csv("data/precedencias.csv", index_col=0)
 
@@ -21,34 +20,34 @@ def iniciar_interfaz():
                 raise ValueError("Las probabilidades deben estar entre 0.0 y 1.0")
 
             # Validar que las columnas requeridas estén presentes
-            if not {'Tarea', 'Tiempo'}.issubset(tareas_df.columns):
-                raise ValueError("El archivo de tareas debe tener las columnas 'Tarea' y 'Tiempo'.")
+            if not {'Nombre', 'Tiempo'}.issubset(tareas_df.columns):
+                raise ValueError("El archivo de tareas debe tener las columnas 'Nombre' y 'Tiempo'.")
 
-            tareas = list(tareas_df['Tarea'])
-            tiempos = dict(zip(tareas_df['Tarea'], tareas_df['Tiempo']))
+            nombres = list(tareas_df['Nombre'])
+            tiempos = dict(zip(tareas_df['Nombre'], tareas_df['Tiempo']))
 
             # Convertir precedencias_df a diccionario de listas
             dependencias = {}
             print("Índices en precedencias_df:", precedencias_df.index.unique())
             print("Columnas en precedencias_df:", precedencias_df.columns)
-            for tarea in tareas:
-                if tarea in precedencias_df.index:
-                    deps = precedencias_df.loc[tarea]
-                    print(f"Tarea: {tarea}")
+            for nombre in nombres:
+                if nombre in precedencias_df.index:
+                    deps = precedencias_df.loc[nombre]
+                    print(f"Tarea: {nombre}")
                     print(f"Tipo deps: {type(deps)}")
                     print(deps)
                     if isinstance(deps, pd.DataFrame):
                         deps = deps.iloc[0]
-                        print(f"Tarea: {tarea}")
+                        print(f"Tarea: {nombre}")
                         print(f"Tipo deps: {type(deps)}")
                         print(deps)
-                    dependencias[tarea] = deps[deps == 1].index.tolist()
+                    dependencias[nombre] = deps[deps == 1].index.tolist()
                 else:
-                    dependencias[tarea] = []
+                    dependencias[nombre] = []
 
             # Llamar al algoritmo genético y obtener resultados
             mejor_individuo, evolucion = ag.ejecutar_algoritmo_genetico(
-                tareas, tiempos, dependencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
+                nombres, tiempos, dependencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
 
             messagebox.showinfo("Éxito", "Algoritmo ejecutado correctamente. Revisa las gráficas generadas.")
 
@@ -56,7 +55,7 @@ def iniciar_interfaz():
             messagebox.showerror("Error", f"Datos inválidos:\n{e}")
 
     root = tk.Tk()
-    root.title("GENASSEMBLE - Algoritmo Genético para Asignación de Tareas")
+    root.title("GENASSEMBLE")
 
     tk.Label(root, text="Número de estaciones:").grid(row=0, column=0, sticky='e')
     entry_estaciones = tk.Entry(root)
@@ -81,6 +80,3 @@ def iniciar_interfaz():
     tk.Button(root, text="Ejecutar algoritmo", command=ejecutar_algoritmo, bg="lightgreen").grid(row=5, column=0, columnspan=2, pady=10)
 
     root.mainloop()
-
-if __name__ == "__main__":
-    iniciar_interfaz()

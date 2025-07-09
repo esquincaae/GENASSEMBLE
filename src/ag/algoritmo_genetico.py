@@ -6,7 +6,8 @@ import numpy as np
 PENALIZACION_PRECEDENCIA = 3
 PENALIZACION_EXCESO_TAREAS = 10
 PENALIZACION_DESEQUILIBRIO = 5
-MAX_TAREAS_POR_ESTACION = 4
+MAX_TAREAS_POR_ESTACION = 3
+PENALIZACION_ESTACION_VACIA = 15
 
 def generar_individuo(tareas, num_estaciones):
     tareas_copia = tareas.copy()
@@ -36,17 +37,18 @@ def evaluar_exceso_tareas(estaciones):
 def evaluar_balanceo(estaciones, tiempos):
     cargas = [sum(tiempos[t] for t in est) for est in estaciones]
     desv = np.std(cargas)
+    print(f"desviacion estandar = {desv:.2f}")
     return desv * PENALIZACION_DESEQUILIBRIO
+
+def evaluar_estaciones_vacias(estaciones):
+    penal = 0
+    estvoid = 0
+    for est in estaciones:
+        if len(est) == 0:
+            estvoid += 1
+    penal += estvoid * PENALIZACION_ESTACION_VACIA
+    return penal
 
 def evaluar_makespan(estaciones, tiempos):
     cargas = [sum(tiempos[t] for t in est) for est in estaciones]
     return max(cargas)
-
-"""def fitness(estaciones, dependencias, tiempos):
-    penal = 0
-    penal += evaluar_precedencias(estaciones, dependencias, tiempos)
-    penal += evaluar_exceso_tareas(estaciones)
-    penal += evaluar_balanceo(estaciones, tiempos)
-    return evaluar_makespan(estaciones, tiempos) + penal"""
-
-

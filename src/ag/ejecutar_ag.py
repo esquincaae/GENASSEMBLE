@@ -3,9 +3,8 @@ from src.ag.cruza import cruza
 from src.ag.mutacion import mutacion
 from src.ag.poda import poda
 from src.ag.algoritmo_genetico import generar_individuo
-from src.ag. fitness import fitness
+from src.ag.fitness import fitness
 from src.gui import graph as graph
-
 
 import copy
 import random
@@ -22,10 +21,8 @@ def ejecutar_algoritmo_genetico(tareas, tiempos, dependencias, num_estaciones,
     for gen in range(num_generaciones):
         nueva_poblacion = []
 
-        # Emparejamiento explícito
         parejas = emparejamiento(poblacion, porcentaje=0.25)
 
-        # Cruza y mutación para generar descendencia
         for p1, p2 in parejas:
             if random.random() < prob_cruza:
                 hijo = cruza(p1, p2, num_estaciones)
@@ -37,11 +34,9 @@ def ejecutar_algoritmo_genetico(tareas, tiempos, dependencias, num_estaciones,
 
             nueva_poblacion.append(hijo)
 
-            # Si queremos mantener tamaño, podemos parar cuando llegue al máximo
             if len(nueva_poblacion) >= tam_poblacion:
                 break
 
-        # Agregamos la nueva generación + padres para poda
         poblacion.extend(nueva_poblacion)
 
         # Poda para mantener tamaño de población
@@ -54,8 +49,6 @@ def ejecutar_algoritmo_genetico(tareas, tiempos, dependencias, num_estaciones,
         if fit_actual < mejor_fitness:
             mejor_fitness = fit_actual
             mejor_individuo = poblacion[0]
-
-        print(f"Generación {gen+1}/{num_generaciones} - Mejor fitness: {mejor_fitness:.2f}")
 
     # Graficar resultados
     graph.graficar_evolucion(evolucion)

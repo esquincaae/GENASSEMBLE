@@ -1,7 +1,7 @@
 import random
 
 def cruza(p1, p2, num_estaciones):
-    """Cruza con hibridación completa: hijos combinan tareas de padres en posiciones pares."""
+    #Cruza con hibridación completa: hijos combinan tareas de padres en posiciones pares.
     hijo = [[] for _ in range(num_estaciones)]
     tareas_p1 = [t for est in p1 for t in est]
     mitad = len(tareas_p1) // 2
@@ -20,4 +20,3 @@ def cruza(p1, p2, num_estaciones):
                 random.choice(hijo).append(t)
                 usadas.add(t)
     return hijo
-
