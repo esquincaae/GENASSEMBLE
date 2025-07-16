@@ -1,7 +1,12 @@
 import random
 
+# Half-Fixed + Random Completion
+
+#Mitad del padre 1 se hereda tal cual (posición + estación).
+
+#La otra mitad se rellena usando el padre 2, y asignándolas en estaciones aleatorias.
+
 def cruza(p1, p2, num_estaciones):
-    #Cruza con hibridación completa: hijos combinan tareas de padres en posiciones pares.
     hijo = [[] for _ in range(num_estaciones)]
     tareas_p1 = [t for est in p1 for t in est]
     mitad = len(tareas_p1) // 2

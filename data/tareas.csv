@@ -1,10 +1,11 @@
 ID,Nombre,Tiempo
-1,Instalar chasis,30
-2,Area de pintura,10
-3,Montar motor,10
-4,Conectar transmisión,20
-5,Instalar sistema eléctrico,20
-6,Colocar ejes,8
-7,Instalar tablero,10
-8,Montar puertas,15
-9,Verificación final,30
+1,Montar chasis,30
+2,Montar puertas,15
+3,Area de pintura,10
+4,Montar motor,10
+5,Conectar transmisión,20
+6,Instalar sistema eléctrico,20
+7,Colocar ejes,8
+8,Instalar tablero,10
+9,Montar puertas,15
+10,Verificación final,30

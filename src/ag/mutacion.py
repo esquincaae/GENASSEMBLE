@@ -1,6 +1,10 @@
 import random
 import copy
 
+#Reubicación entre estaciones aleatoria.
+
+#Intercambio de orden dentro de una estación.
+
 def mutacion(estaciones, num_estaciones):
     nuevo = copy.deepcopy(estaciones)
     if random.random() < 0.5:

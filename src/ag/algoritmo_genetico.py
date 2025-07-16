@@ -37,7 +37,7 @@ def evaluar_exceso_tareas(estaciones):
 def evaluar_balanceo(estaciones, tiempos):
     cargas = [sum(tiempos[t] for t in est) for est in estaciones]
     desv = np.std(cargas)
-    print(f"desviacion estandar = {desv:.2f}")
+    #print(f"desviacion estandar = {desv:.2f}")
     return desv * PENALIZACION_DESEQUILIBRIO
 
 def evaluar_estaciones_vacias(estaciones):
