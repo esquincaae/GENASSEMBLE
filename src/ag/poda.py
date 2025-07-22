@@ -1,8 +1,10 @@
 import random
 from src.ag.fitness import fitness
 
+# Poda se encarga de mantener el tamaño de la población y eliminar duplicados
+# se asegura que el mejor individuo siempre esté presente
+
 def poda(poblacion, dependencias, tiempos, tam_poblacion):
-    # Eliminar clones: usar tuplas para hashable
     poblacion_unica = {}
     for ind in poblacion:
         key = tuple(tuple(est) for est in ind)

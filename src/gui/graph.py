@@ -54,7 +54,7 @@ def ventana_top_3(poblacion, tiempos, dependencias, fitness_func):
             texto.insert(tk.END, f"   Estación {est_idx+1}: [{tareas}] - Tiempo total: {tiempo_total}\n")
         texto.insert(tk.END, "\n")
 
-    texto.config(state='disabled')  # Solo lectura
+    texto.config(state='disabled')
 
 def ventana_resumen_mejor(poblacion, tiempos, dependencias, fitness_func):
     mejor = min(poblacion, key=lambda ind: fitness_func(ind, dependencias, tiempos))

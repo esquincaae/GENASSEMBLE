@@ -1,7 +1,9 @@
 import random
 
+#Selecciona un porcentaje de la población para formar parejas todos-con-todos
+
 def emparejamiento(poblacion, porcentaje=0.25):
-    """Selecciona un porcentaje de la población para formar parejas todos-con-todos."""
+    
     num_seleccionados = max(2, int(len(poblacion) * porcentaje))
     seleccionados = random.sample(poblacion, num_seleccionados)
     parejas = []

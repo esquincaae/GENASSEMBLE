@@ -1,4 +1,7 @@
-from src.ag.algoritmo_genetico import evaluar_precedencias, evaluar_exceso_tareas, evaluar_balanceo, evaluar_makespan, evaluar_estaciones_vacias
+from src.ag.other_methods import evaluar_precedencias, evaluar_exceso_tareas, evaluar_balanceo, evaluar_makespan, evaluar_estaciones_vacias
+
+#funcion fitness que evalua un individuo, tomando en cuenta las penalizaciones por violaciones de restricciones
+
 
 def fitness(estaciones, dependencias, tiempos):
     penal = 0

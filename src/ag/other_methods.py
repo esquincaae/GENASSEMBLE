@@ -5,7 +5,7 @@ import numpy as np
 
 PENALIZACION_PRECEDENCIA = 3
 PENALIZACION_EXCESO_TAREAS = 10
-PENALIZACION_DESEQUILIBRIO = 5
+PENALIZACION_DESEQUILIBRIO = 10
 MAX_TAREAS_POR_ESTACION = 3
 PENALIZACION_ESTACION_VACIA = 15
 
@@ -37,7 +37,6 @@ def evaluar_exceso_tareas(estaciones):
 def evaluar_balanceo(estaciones, tiempos):
     cargas = [sum(tiempos[t] for t in est) for est in estaciones]
     desv = np.std(cargas)
-    #print(f"desviacion estandar = {desv:.2f}")
     return desv * PENALIZACION_DESEQUILIBRIO
 
 def evaluar_estaciones_vacias(estaciones):

@@ -2,7 +2,7 @@ from src.ag.emparejamiento import emparejamiento
 from src.ag.cruza import cruza
 from src.ag.mutacion import mutacion
 from src.ag.poda import poda
-from src.ag.algoritmo_genetico import generar_individuo
+from src.ag.other_methods import generar_individuo
 from src.ag.fitness import fitness
 from src.gui import graph as graph
 
@@ -10,8 +10,7 @@ import copy
 import random
 
 def ejecutar_algoritmo_genetico(tareas, tiempos, dependencias, num_estaciones,
-                                tam_poblacion, num_generaciones,
-                                prob_cruza, prob_mutacion):
+                                tam_poblacion, num_generaciones, prob_cruza, prob_mutacion):
 
     poblacion = [generar_individuo(tareas, num_estaciones) for _ in range(tam_poblacion)]
     mejor_fitness = float('inf')

@@ -1,6 +1,6 @@
 import random
 
-# Half-Fixed + Random Completion
+#Half-Fixed + Random Completion
 
 #Mitad del padre 1 se hereda tal cual (posición + estación).
 

@@ -19,7 +19,7 @@ def iniciar_interfaz():
             if not (0 <= p_cruza <= 1 and 0 <= p_mutacion <= 1):
                 raise ValueError("Las probabilidades deben estar entre 0.0 y 1.0")
 
-            # Validar que las columnas requeridas estén presentes
+            # Validar que las columnas existan en tareas_df
             if not {'Nombre', 'Tiempo'}.issubset(tareas_df.columns):
                 raise ValueError("El archivo de tareas debe tener las columnas 'Nombre' y 'Tiempo'.")
 
@@ -27,29 +27,29 @@ def iniciar_interfaz():
             tiempos = dict(zip(tareas_df['Nombre'], tareas_df['Tiempo']))
 
             # Convertir precedencias_df a diccionario de listas
-            dependencias = {}
-            print("Índices en precedencias_df:", precedencias_df.index.unique())
-            print("Columnas en precedencias_df:", precedencias_df.columns)
+            matPrecedencias = {}
+            #print("Claves de dependencias:", precedencias_df.index.unique())
+            #print("Valores para dependencias:", precedencias_df.columns)
             for nombre in nombres:
                 if nombre in precedencias_df.index:
                     deps = precedencias_df.loc[nombre]
-                    print(f"Tarea: {nombre}")
-                    print(f"Tipo deps: {type(deps)}")
-                    print(deps)
+                    #print(f"Tarea: {nombre}")
+                    #print(f"Tipo deps: {type(deps)}")
+                    #print(deps)
                     if isinstance(deps, pd.DataFrame):
                         deps = deps.iloc[0]
-                        print(f"Tarea: {nombre}")
-                        print(f"Tipo deps: {type(deps)}")
-                        print(deps)
-                    dependencias[nombre] = deps[deps == 1].index.tolist()
+                        #print(f"Tarea: {nombre}")
+                        #print(f"Tipo deps: {type(deps)}")
+                        #print(deps)
+                    matPrecedencias[nombre] = deps[deps == 1].index.tolist()
                 else:
-                    dependencias[nombre] = []
+                    matPrecedencias[nombre] = []
 
-            # Llamar al algoritmo genético y obtener resultados
+            # Llama al algoritmo genético y obtiene los resultados
             mejor_individuo, evolucion = ag.ejecutar_algoritmo_genetico(
-                nombres, tiempos, dependencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
+                nombres, tiempos, matPrecedencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
 
-            messagebox.showinfo("Éxito", "Algoritmo ejecutado correctamente. Revisa las gráficas generadas.")
+            #messagebox.showinfo("Éxito", "Algoritmo ejecutado correctamente. Revisa las gráficas generadas.")
 
         except Exception as e:
             messagebox.showerror("Error", f"Datos inválidos:\n{e}")
