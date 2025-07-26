@@ -2,14 +2,14 @@ from src.ag.emparejamiento import emparejamiento
 from src.ag.cruza import cruza
 from src.ag.mutacion import mutacion
 from src.ag.poda import poda
-from src.ag.other_methods import generar_individuo
+from src.ag.individuos import generar_individuo
 from src.ag.fitness import fitness
 from src.gui import graph as graph
 
 import copy
 import random
 
-def ejecutar_algoritmo_genetico(tareas, tiempos, dependencias, num_estaciones,
+def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, num_estaciones,
                                 tam_poblacion, num_generaciones, prob_cruza, prob_mutacion):
 
     poblacion = [generar_individuo(tareas, num_estaciones) for _ in range(tam_poblacion)]
@@ -39,11 +39,11 @@ def ejecutar_algoritmo_genetico(tareas, tiempos, dependencias, num_estaciones,
         poblacion.extend(nueva_poblacion)
 
         # Poda para mantener tamaño de población
-        poblacion = poda(poblacion, dependencias, tiempos, tam_poblacion)
+        poblacion = poda(poblacion, dependencias, infoTareas, tam_poblacion)
 
         # Evaluar mejor individuo
-        poblacion.sort(key=lambda ind: fitness(ind, dependencias, tiempos))
-        fit_actual = fitness(poblacion[0], dependencias, tiempos)
+        poblacion.sort(key=lambda ind: fitness(ind, dependencias, infoTareas))
+        fit_actual = fitness(poblacion[0], dependencias, infoTareas)
         evolucion.append(fit_actual)
         if fit_actual < mejor_fitness:
             mejor_fitness = fit_actual
@@ -51,8 +51,8 @@ def ejecutar_algoritmo_genetico(tareas, tiempos, dependencias, num_estaciones,
 
     # Graficar resultados
     graph.graficar_evolucion(evolucion)
-    graph.graficar_gantt(mejor_individuo, tiempos, num_estaciones, tareas)
-    graph.ventana_top_3(poblacion, tiempos, dependencias, fitness)
-    graph.ventana_resumen_mejor(poblacion, tiempos, dependencias, fitness)
+    graph.graficar_gantt(mejor_individuo, infoTareas, num_estaciones, tareas)
+    graph.ventana_top_3(poblacion, infoTareas, dependencias, fitness)
+    graph.ventana_resumen_mejor(poblacion, infoTareas, dependencias, fitness)
 
     return mejor_individuo, evolucion

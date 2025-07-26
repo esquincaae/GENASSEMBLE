@@ -1,0 +1,2 @@
+diferenciar las estaciones
+cada estacion debe diferenciarse para hacer trabajos especificos

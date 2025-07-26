@@ -1,4 +1,4 @@
-from src.ag import ejecutar_ag as ag
+from src.ag.ejecutar_ag import ejecutar_algoritmo_genetico
 import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
@@ -16,6 +16,9 @@ def iniciar_interfaz():
             p_cruza = float(entry_cruza.get())
             p_mutacion = float(entry_mutacion.get())
 
+            if (isinstance(estaciones, int) and estaciones >=5):
+                raise ValueError("El valor de estaciones debe ser por lo menos de 5.")
+
             if not (0 <= p_cruza <= 1 and 0 <= p_mutacion <= 1):
                 raise ValueError("Las probabilidades deben estar entre 0.0 y 1.0")
 
@@ -23,33 +26,28 @@ def iniciar_interfaz():
             if not {'Nombre', 'Tiempo'}.issubset(tareas_df.columns):
                 raise ValueError("El archivo de tareas debe tener las columnas 'Nombre' y 'Tiempo'.")
 
-            nombres = list(tareas_df['Nombre'])
-            tiempos = dict(zip(tareas_df['Nombre'], tareas_df['Tiempo']))
+            nombresTareas = list(tareas_df['Nombre'])
+            infoTareas = {
+                row['Nombre']: {
+                    'tiempo': row['Tiempo'],
+                    'tipo': row['Tipo']
+                } for _, row in tareas_df.iterrows()
+        }
 
             # Convertir precedencias_df a diccionario de listas
             matPrecedencias = {}
-            #print("Claves de dependencias:", precedencias_df.index.unique())
-            #print("Valores para dependencias:", precedencias_df.columns)
-            for nombre in nombres:
+            for nombre in nombresTareas:
                 if nombre in precedencias_df.index:
                     deps = precedencias_df.loc[nombre]
-                    #print(f"Tarea: {nombre}")
-                    #print(f"Tipo deps: {type(deps)}")
-                    #print(deps)
                     if isinstance(deps, pd.DataFrame):
                         deps = deps.iloc[0]
-                        #print(f"Tarea: {nombre}")
-                        #print(f"Tipo deps: {type(deps)}")
-                        #print(deps)
                     matPrecedencias[nombre] = deps[deps == 1].index.tolist()
                 else:
                     matPrecedencias[nombre] = []
 
-            # Llama al algoritmo genético y obtiene los resultados
-            mejor_individuo, evolucion = ag.ejecutar_algoritmo_genetico(
-                nombres, tiempos, matPrecedencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
-
-            #messagebox.showinfo("Éxito", "Algoritmo ejecutado correctamente. Revisa las gráficas generadas.")
+            # Llama al algoritmo genético
+            mejor_individuo, evolucion = ejecutar_algoritmo_genetico(
+                nombresTareas, infoTareas, matPrecedencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
 
         except Exception as e:
             messagebox.showerror("Error", f"Datos inválidos:\n{e}")
