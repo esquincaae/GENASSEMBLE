@@ -2,17 +2,18 @@ from src.ag.emparejamiento import emparejamiento
 from src.ag.cruza import cruza
 from src.ag.mutacion import mutacion
 from src.ag.poda import poda
-from src.ag.individuos import generar_individuo
+from src.ag.individuo import generar_individuo
 from src.ag.fitness import fitness
 from src.gui import graph as graph
 
 import copy
 import random
 
-def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, num_estaciones,
-                                tam_poblacion, num_generaciones, prob_cruza, prob_mutacion):
+def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, 
+                                num_estaciones,tam_poblacion, num_generaciones, 
+                                prob_cruza, prob_mutacion, estaciones_tipos):
 
-    poblacion = [generar_individuo(tareas, num_estaciones) for _ in range(tam_poblacion)]
+    poblacion = [generar_individuo(tareas, num_estaciones, estaciones_tipos) for _ in range(tam_poblacion)]
     mejor_fitness = float('inf')
     mejor_individuo = None
     evolucion = []
@@ -42,8 +43,8 @@ def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, num_estaciones
         poblacion = poda(poblacion, dependencias, infoTareas, tam_poblacion)
 
         # Evaluar mejor individuo
-        poblacion.sort(key=lambda ind: fitness(ind, dependencias, infoTareas))
-        fit_actual = fitness(poblacion[0], dependencias, infoTareas)
+        poblacion.sort(key=lambda ind: fitness(ind, dependencias, infoTareas, estaciones_tipos))
+        fit_actual = fitness(poblacion[0], dependencias, infoTareas, estaciones_tipos)
         evolucion.append(fit_actual)
         if fit_actual < mejor_fitness:
             mejor_fitness = fit_actual

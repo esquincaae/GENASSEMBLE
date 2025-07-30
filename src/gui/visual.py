@@ -5,26 +5,30 @@ import pandas as pd
 
 tareas_df = pd.read_csv("data/tareas.csv")
 precedencias_df = pd.read_csv("data/precedencias.csv", index_col=0)
+tipos_estaciones_df = pd.read_csv("data/tipos_estaciones.csv")
 
 def iniciar_interfaz():
     def ejecutar_algoritmo():
-        global tareas_df, precedencias_df
+        global tareas_df, precedencias_df, tipos_estaciones_df
         try:
-            estaciones = int(entry_estaciones.get())
+            estaciones = 5
             poblacion = int(entry_poblacion.get())
             generaciones = int(entry_generaciones.get())
             p_cruza = float(entry_cruza.get())
             p_mutacion = float(entry_mutacion.get())
 
-            if (isinstance(estaciones, int) and estaciones >=5):
-                raise ValueError("El valor de estaciones debe ser por lo menos de 5.")
-
             if not (0 <= p_cruza <= 1 and 0 <= p_mutacion <= 1):
                 raise ValueError("Las probabilidades deben estar entre 0.0 y 1.0")
-
-            # Validar que las columnas existan en tareas_df
+            
+            # Validar que las columnas existan 
             if not {'Nombre', 'Tiempo'}.issubset(tareas_df.columns):
                 raise ValueError("El archivo de tareas debe tener las columnas 'Nombre' y 'Tiempo'.")
+            if not {'Estacion', 'Tipos'}.issubset(tipos_estaciones_df.columns):
+                raise ValueError("El archivo de tipos de estaciones debe tener las columnas 'Estacion' y 'Tipos'.")
+
+            estaciones_tipos = {
+                row['Estacion']: row['Tipos'].split(",") for _, row in tipos_estaciones_df.iterrows()
+            }
 
             nombresTareas = list(tareas_df['Nombre'])
             infoTareas = {
@@ -32,7 +36,7 @@ def iniciar_interfaz():
                     'tiempo': row['Tiempo'],
                     'tipo': row['Tipo']
                 } for _, row in tareas_df.iterrows()
-        }
+            }
 
             # Convertir precedencias_df a diccionario de listas
             matPrecedencias = {}
@@ -47,17 +51,13 @@ def iniciar_interfaz():
 
             # Llama al algoritmo genético
             mejor_individuo, evolucion = ejecutar_algoritmo_genetico(
-                nombresTareas, infoTareas, matPrecedencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
+                nombresTareas, infoTareas, matPrecedencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion, estaciones_tipos)
 
         except Exception as e:
             messagebox.showerror("Error", f"Datos inválidos:\n{e}")
 
     root = tk.Tk()
     root.title("GENASSEMBLE")
-
-    tk.Label(root, text="Número de estaciones:").grid(row=0, column=0, sticky='e')
-    entry_estaciones = tk.Entry(root)
-    entry_estaciones.grid(row=0, column=1)
 
     tk.Label(root, text="Tamaño de población:").grid(row=1, column=0, sticky='e')
     entry_poblacion = tk.Entry(root)

@@ -1,7 +1,7 @@
 ID,Nombre,Tiempo,Tipo
 1,Montar chasis,30,Montaje
 2,Montar puertas,15,Montaje
-3,Area de pintura,10,Pintura
+3,Pintura,10,Pintura
 4,Montar motor,10,Montaje
 5,Conectar transmisión,20,Transmisión
 6,Instalar sistema eléctrico,20,Eléctrico

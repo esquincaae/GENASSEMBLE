@@ -1,7 +1,7 @@
 ,Montar chasis,Montar puertas,Area de pintura,Montar motor,Conectar transmisión,Instalar sistema eléctrico,Colocar ejes,Instalar tablero,Verificación final
 Montar chasis,0,0,0,0,0,0,0,0,0
 Montar puertas,1,0,0,0,0,0,0,0,0
-Area de pintura,1,1,0,0,0,0,0,0,0
+Pintura,1,1,0,0,0,0,0,0,0
 Montar motor,1,0,1,0,0,0,0,0,0
 Conectar transmisión,1,0,0,1,0,0,0,0,0
 Instalar sistema eléctrico,1,0,0,1,0,0,0,0,0

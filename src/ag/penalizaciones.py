@@ -3,11 +3,21 @@ from src.gui import graph as graph
 import random
 import numpy as np
 
+PENALIZACION_ESTACION_EQUIVOCA = 20
 PENALIZACION_PRECEDENCIA = 3
 PENALIZACION_EXCESO_TAREAS = 10
 PENALIZACION_DESEQUILIBRIO = 10
 MAX_TAREAS_POR_ESTACION = 3
-PENALIZACION_ESTACION_VACIA = 15 
+PENALIZACION_ESTACION_VACIA = 15
+
+def estaciones_validas(estaciones, infoTareas, estaciones_tipos):
+    for est in estaciones:
+        tipos_permitidos = estaciones_tipos.get(est, [])
+        for tarea in est:
+            tipo_tarea = infoTareas[tarea]["tipo"]
+            if tipo_tarea not in tipos_permitidos:
+                penal = PENALIZACION_ESTACION_EQUIVOCA * infoTareas[tarea]['tiempo']
+                return penal
 
 def evaluar_precedencias(estaciones, dependencias, infoTareas):
     orden_global = [t for est in estaciones for t in est]
