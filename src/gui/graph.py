@@ -18,7 +18,16 @@ def graficar_gantt(individuo, infoTareas, num_estaciones, tareas):
     colores = plt.cm.get_cmap('tab20', len(tareas))
     tiempos_actuales = [0]*num_estaciones
 
-    for est_idx, est in enumerate(individuo):
+    tipos_estaciones = []
+    for est in individuo:
+        if est:
+            tipos_estaciones.append(infoTareas[est[0]]['tipo'])
+        else:
+            tipos_estaciones.append('Vacia')
+
+    individuo_reversed = individuo[::-1]
+
+    for est_idx, est in enumerate(individuo_reversed):
         for tarea in est:
             inicio = tiempos_actuales[est_idx]
             duracion = infoTareas[tarea]['tiempo']
@@ -27,7 +36,7 @@ def graficar_gantt(individuo, infoTareas, num_estaciones, tareas):
             tiempos_actuales[est_idx] += duracion
 
     ax.set_yticks([i*10+4.5 for i in range(num_estaciones)])
-    ax.set_yticklabels([f'Estación {i+1}' for i in range(num_estaciones)])
+    ax.set_yticklabels([f'{tipo}' for i, tipo in enumerate(tipos_estaciones)])
     ax.set_xlabel('Tiempo')
     ax.set_title('Diagrama de Gantt de la mejor solución')
     plt.tight_layout()

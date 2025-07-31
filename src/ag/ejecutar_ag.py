@@ -12,7 +12,7 @@ import random
 def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, num_estaciones,
                                 tam_poblacion, num_generaciones, prob_cruza, prob_mutacion):
 
-    poblacion = [generar_individuo(tareas, num_estaciones) for _ in range(tam_poblacion)]
+    poblacion = [generar_individuo(tareas, num_estaciones, infoTareas) for _ in range(tam_poblacion)]
     mejor_fitness = float('inf')
     mejor_individuo = None
     evolucion = []
@@ -24,12 +24,12 @@ def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, num_estaciones
 
         for p1, p2 in parejas:
             if random.random() < prob_cruza:
-                hijo = cruza(p1, p2, num_estaciones)
+                hijo = cruza(p1, p2, num_estaciones, infoTareas)
             else:
                 hijo = copy.deepcopy(random.choice([p1, p2]))
 
             if random.random() < prob_mutacion:
-                hijo = mutacion(hijo, num_estaciones)
+                hijo = mutacion(hijo, num_estaciones, infoTareas)
 
             nueva_poblacion.append(hijo)
 

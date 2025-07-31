@@ -4,10 +4,8 @@ import random
 import numpy as np
 
 PENALIZACION_PRECEDENCIA = 3
-PENALIZACION_EXCESO_TAREAS = 10
 PENALIZACION_DESEQUILIBRIO = 10
-MAX_TAREAS_POR_ESTACION = 3
-PENALIZACION_ESTACION_VACIA = 15 
+PENALIZACION_MEZCLA_TIPOS = 100 
 
 def evaluar_precedencias(estaciones, dependencias, infoTareas):
     orden_global = [t for est in estaciones for t in est]
@@ -19,25 +17,18 @@ def evaluar_precedencias(estaciones, dependencias, infoTareas):
                 penal += PENALIZACION_PRECEDENCIA * infoTareas[tarea]['tiempo']
     return penal
 
-def evaluar_exceso_tareas(estaciones):
-    penal = 0
-    for est in estaciones:
-        exceso = max(0, len(est) - MAX_TAREAS_POR_ESTACION)
-        penal += exceso * PENALIZACION_EXCESO_TAREAS
-    return penal
-
 def evaluar_balanceo(estaciones, infoTareas):
     cargas = [sum(infoTareas[t]['tiempo'] for t in est) for est in estaciones]
     desv = np.std(cargas)
     return desv * PENALIZACION_DESEQUILIBRIO
 
-def evaluar_estaciones_vacias(estaciones):
+def penalizar_mezcla_tipos(estaciones, infoTareas):
+    # Penaliza si en una estación hay tareas de más de un tipo
     penal = 0
-    estvoid = 0
     for est in estaciones:
-        if len(est) == 0:
-            estvoid += 1
-    penal += estvoid * PENALIZACION_ESTACION_VACIA
+        tipos = {infoTareas[t]['tipo'] for t in est}
+        if len(tipos) > 1:
+            penal += PENALIZACION_MEZCLA_TIPOS
     return penal
 
 def evaluar_makespan(estaciones, infoTareas):

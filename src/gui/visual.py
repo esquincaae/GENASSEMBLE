@@ -9,15 +9,12 @@ precedencias_df = pd.read_csv("data/precedencias.csv", index_col=0)
 def iniciar_interfaz():
     def ejecutar_algoritmo():
         global tareas_df, precedencias_df
+        estaciones = 5
         try:
-            estaciones = int(entry_estaciones.get())
             poblacion = int(entry_poblacion.get())
             generaciones = int(entry_generaciones.get())
             p_cruza = float(entry_cruza.get())
             p_mutacion = float(entry_mutacion.get())
-
-            if (isinstance(estaciones, int) and estaciones >=5):
-                raise ValueError("El valor de estaciones debe ser por lo menos de 5.")
 
             if not (0 <= p_cruza <= 1 and 0 <= p_mutacion <= 1):
                 raise ValueError("Las probabilidades deben estar entre 0.0 y 1.0")
@@ -54,10 +51,6 @@ def iniciar_interfaz():
 
     root = tk.Tk()
     root.title("GENASSEMBLE")
-
-    tk.Label(root, text="Número de estaciones:").grid(row=0, column=0, sticky='e')
-    entry_estaciones = tk.Entry(root)
-    entry_estaciones.grid(row=0, column=1)
 
     tk.Label(root, text="Tamaño de población:").grid(row=1, column=0, sticky='e')
     entry_poblacion = tk.Entry(root)

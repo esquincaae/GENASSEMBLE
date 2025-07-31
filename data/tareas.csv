@@ -1,11 +1,18 @@
 ID,Nombre,Tiempo,Tipo
 1,Montar chasis,30,Montaje
-2,Montar puertas,15,Montaje
-3,Area de pintura,10,Pintura
+2,Colocar ejes,8,Montaje
+3,Montar puertas,15,Montaje
 4,Montar motor,10,Montaje
 5,Conectar transmisión,20,Transmisión
-6,Instalar sistema eléctrico,20,Eléctrico
-7,Colocar ejes,8,Montaje
-8,Instalar tablero,10,Montaje
-9,Montar puertas,15,Montaje
-10,Verificación final,30,Verificación
+6,Calibrar transmisión,16,Transmisión
+7,Probar conexión de transmisión,15,Transmisión
+8,Instalar sistema eléctrico,20,Eléctrico
+9,Conectar sensores de reversa,10,Eléctrico
+10,Probar luces interiores,12,Eléctrico
+11,Instalar tablero,10,Montaje
+12,Area de pintura,10,Pintura
+13,Aplicar segunda capa de pintura,12,Pintura
+14,Aplicar barniz final,10,Pintura
+15,Verificación final,30,Verificación
+16,Revisar sistema de frenos,18,Verificación
+17,Verificar sistema de iluminación,15,Verificación

@@ -1,18 +1,17 @@
 import random
 import copy
 
-#Reubicación entre estaciones aleatoria.
-
-def mutacion(hijo, num_estaciones):
+# Reordena aleatoriamente las tareas dentro de una estación, usando infoTareas para asegurar el tipo
+def mutacion(hijo, num_estaciones, infoTareas):
     nuevo = copy.deepcopy(hijo)
-    origenes = [i for i, est in enumerate(nuevo) if est]
-    if not origenes:
+    # Selecciona una estación con más de una tarea
+    estaciones_mutables = [i for i, est in enumerate(nuevo) if len(est) > 1]
+    if not estaciones_mutables:
         return nuevo
-    origen = random.choice(origenes)
-    destino = random.choice(range(num_estaciones))
-    if nuevo[origen]:
-        t = random.choice(nuevo[origen])
-        nuevo[origen].remove(t)
-        nuevo[destino].append(t)
+    idx = random.choice(estaciones_mutables)
+    # Solo reordena tareas del mismo tipo
+    tipo_estacion = infoTareas[nuevo[idx][0]]['tipo']
+    tareas_tipo = [t for t in nuevo[idx] if infoTareas[t]['tipo'] == tipo_estacion]
+    random.shuffle(tareas_tipo)
+    nuevo[idx] = tareas_tipo
     return nuevo
-

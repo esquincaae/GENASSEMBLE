@@ -1,2 +1,3 @@
-diferenciar las estaciones
 cada estacion debe diferenciarse para hacer trabajos especificos
+
+el flujo de las tareas en el individuo debe ser trabajado por hilos
