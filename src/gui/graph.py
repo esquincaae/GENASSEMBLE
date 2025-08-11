@@ -1,35 +1,92 @@
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as path_effects
 import tkinter as tk
+
+def agrupar_por_tipo(individuo, infoTareas, num_estaciones=None):
+    estaciones_dict = {}
+    for tarea in individuo:
+        tipo = infoTareas[tarea]['tipo']
+        if tipo not in estaciones_dict:
+            estaciones_dict[tipo] = []
+        estaciones_dict[tipo].append(tarea)
+
+    estaciones = list(estaciones_dict.values())
+    if num_estaciones:
+        if len(estaciones) < num_estaciones:
+            estaciones.extend([[]] * (num_estaciones - len(estaciones)))
+        elif len(estaciones) > num_estaciones:
+            estaciones = estaciones[:num_estaciones]
+    return estaciones
 
 def graficar_evolucion(mejores):
     plt.figure(figsize=(10,5))
     plt.plot(mejores, label='Mejor fitness (makespan + penalizaciones)')
     plt.xlabel('Generación')
     plt.ylabel('Fitness')
-    plt.title('Evolución del Algoritmo Genético')
+    plt.title('Evolución del mejor individuo')
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
-    plt.savefig('results/evolucion_algoritmo.png')
+    plt.savefig('results/evolucion_mejor_individuo.png')
     plt.show()
 
-def graficar_gantt(individuo, infoTareas, num_estaciones, tareas):
-    fig, ax = plt.subplots(figsize=(12, 6))
-    colores = plt.cm.get_cmap('tab20', len(tareas))
-    tiempos_actuales = [0]*num_estaciones
+def graficar_gantt(individuo, infoTareas):
+    
+    for i in range(0, len(individuo), 3):
+        if i == 0:
+            print("[", end=" ")
+        print(individuo[i:i+3])
+        if i + 3 >= len(individuo):
+            print("]", end=" ")
+    tipos = []
+    for t in individuo:
+        tipo = infoTareas[t]['tipo']
+        if tipo not in tipos:
+            tipos.append(tipo)
 
-    for est_idx, est in enumerate(individuo):
-        for tarea in est:
-            inicio = tiempos_actuales[est_idx]
-            duracion = infoTareas[tarea]['tiempo']
-            ax.broken_barh([(inicio, duracion)], (est_idx*10, 9), facecolors=colores(tareas.index(tarea)))
-            ax.text(inicio + duracion/2, est_idx*10 + 4.5, tarea, ha='center', va='center', color='white', fontsize=8)
-            tiempos_actuales[est_idx] += duracion
+    tipo_a_fila = {tipo: i for i, tipo in enumerate(tipos)}
 
-    ax.set_yticks([i*10+4.5 for i in range(num_estaciones)])
-    ax.set_yticklabels([f'Estación {i+1}' for i in range(num_estaciones)])
-    ax.set_xlabel('Tiempo')
-    ax.set_title('Diagrama de Gantt de la mejor solución')
+    fig, ax = plt.subplots(figsize=(14, 6))
+    colores = plt.cm.get_cmap('tab20', len(tipos))
+
+    tiempo_global = 0
+    disponibilidad_tipo = {tipo: 0 for tipo in tipos}
+    max_tiempo = 0
+
+    for tarea in individuo:
+        tipo = infoTareas[tarea]['tipo']
+        duracion = infoTareas[tarea]['tiempo']
+
+        inicio = max(tiempo_global, disponibilidad_tipo[tipo])
+        fin = inicio + duracion
+
+        fila = tipo_a_fila[tipo]
+
+        ax.broken_barh([(inicio, duracion)], (fila * 10, 9), facecolors=colores(fila), edgecolor='black')
+
+        # Ajustar tamaño de fuente mínimo 6
+        fontsize = max(1, min(12, duracion * 3))  # escala para que sea proporcional
+
+        texto = tarea.replace(" ", "\n")  # reemplazar guiones bajos por espacios
+        ax.text(inicio + duracion / 2, fila * 10 + 4.5, texto, ha='center', va='center',
+                color='white', fontsize=fontsize, weight='bold',
+                path_effects=[path_effects.withStroke(linewidth=2, foreground='black')])
+
+        tiempo_global = fin
+        disponibilidad_tipo[tipo] = fin
+        max_tiempo = max(max_tiempo, fin)
+
+    for i in range(len(tipos) + 1):
+        ax.axhline(i * 10, color='gray', linewidth=0.8, linestyle='--')
+
+    ax.set_yticks([i * 10 + 4.5 for i in range(len(tipos))])
+    ax.set_yticklabels(tipos, fontsize=11)
+
+    ax.set_xlim(0, max_tiempo * 1.1)
+    ax.set_xlabel('Tiempo', fontsize=12)
+    ax.set_title('Diagrama de Gantt con texto ajustado', fontsize=14, weight='bold')
+    ax.grid(axis='x', linestyle=':', linewidth=0.7)
+
     plt.tight_layout()
     plt.savefig('results/gantt_mejor_solucion.png')
     plt.show()
@@ -39,44 +96,57 @@ def ventana_top_3(poblacion, infoTareas, dependencias, fitness_func):
 
     ventana = tk.Toplevel()
     ventana.title("Top 3 mejores soluciones")
-    ventana.geometry("750x400")
+    ventana.geometry("920x350")
 
     texto = tk.Text(ventana, wrap='word', font=("Consolas", 10))
     texto.pack(fill='both', expand=True)
 
     texto.insert(tk.END, "Tabla con los 3 mejores resultados:\n\n")
+
     for i, ind in enumerate(top_3, start=1):
-        texto.insert(tk.END, f"🔹 Individuo {i} - Fitness total: {fitness_func(ind, dependencias, infoTareas):.2f}\n")
-        ttf = 0
-        for est_idx, est in enumerate(ind):
-            tareas = ', '.join(est)
-            tiempo_total = sum(infoTareas[t]['tiempo'] for t in est)
-            texto.insert(tk.END, f"   Estación {est_idx+1}: [{tareas}] - Tiempo total: {tiempo_total}\n")
+        fitness_val = fitness_func(ind, dependencias, infoTareas)
+        texto.insert(tk.END, f"🔹 Individuo {i} - Fitness total: {fitness_val:.2f}\n")
+
+        estaciones = agrupar_por_tipo(ind, infoTareas)
+
+        for est_idx, tareas in enumerate(estaciones, start=1):
+            if tareas:
+                tipo = infoTareas[tareas[0]]['tipo']  # Tomamos el tipo de la primera tarea
+                tiempo_total = sum(infoTareas[t]['tiempo'] for t in tareas)
+                texto.insert(tk.END, f"   Estación {est_idx} ({tipo}): [{', '.join(tareas)}] - Tiempo total: {tiempo_total}\n")
+            else:
+                texto.insert(tk.END, f"   Estación {est_idx}: vacía\n")
+
         texto.insert(tk.END, "\n")
 
     texto.config(state='disabled')
 
 def ventana_resumen_mejor(poblacion, infoTareas, dependencias, fitness_func):
     mejor = min(poblacion, key=lambda ind: fitness_func(ind, dependencias, infoTareas))
-    cargas = [sum(infoTareas[t]['tiempo'] for t in est) for est in mejor]
-    makespan = max(cargas)
+    estaciones = agrupar_por_tipo(mejor, infoTareas)
+
+    cargas = [sum(infoTareas[t]['tiempo'] for t in tareas) for tareas in estaciones]
+    makespan = sum(cargas) if cargas else 0
     penalizaciones = fitness_func(mejor, dependencias, infoTareas) - makespan
 
     ventana = tk.Toplevel()
     ventana.title("Resumen del mejor individuo")
-    ventana.geometry("750x300")
+    ventana.geometry("920x200")
 
     texto = tk.Text(ventana, wrap='word', font=("Consolas", 10))
     texto.pack(fill='both', expand=True)
 
     texto.insert(tk.END, "Resumen del mejor individuo:\n\n")
-    for est_idx, est in enumerate(mejor):
-        tareas = ', '.join(est)
-        tiempo_total = cargas[est_idx]
-        texto.insert(tk.END, f"   Estación {est_idx+1}: [{tareas}] - Tiempo total: {tiempo_total}\n")
+
+    for est_idx, tareas in enumerate(estaciones, start=1):
+        if tareas:
+            tipo = infoTareas[tareas[0]]['tipo']  # Obtener tipo desde la primera tarea
+            tiempo_total = sum(infoTareas[t]['tiempo'] for t in tareas)
+            texto.insert(tk.END, f"   Estación {est_idx} ({tipo}): [{', '.join(tareas)}] - Tiempo total: {tiempo_total}\n")
+        else:
+            texto.insert(tk.END, f"   Estación {est_idx}: vacía\n")
 
     texto.insert(tk.END, f"\nMakespan total: {makespan}\n")
     texto.insert(tk.END, f"Penalizaciones: {penalizaciones:.2f}\n")
 
     texto.config(state='disabled')
-

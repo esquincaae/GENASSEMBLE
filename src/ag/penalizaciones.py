@@ -1,55 +1,37 @@
-from src.gui import graph as graph
-
-import random
 import numpy as np
 
-PENALIZACION_ESTACION_EQUIVOCA = 20
-PENALIZACION_PRECEDENCIA = 3
-PENALIZACION_EXCESO_TAREAS = 10
-PENALIZACION_DESEQUILIBRIO = 10
-MAX_TAREAS_POR_ESTACION = 3
-PENALIZACION_ESTACION_VACIA = 15
+PENALIZACION_PRECEDENCIA = 1
+PENALIZACION_DESEQUILIBRIO = 1
 
-def estaciones_validas(estaciones, infoTareas, estaciones_tipos):
-    for est in estaciones:
-        tipos_permitidos = estaciones_tipos.get(est, [])
-        for tarea in est:
-            tipo_tarea = infoTareas[tarea]["tipo"]
-            if tipo_tarea not in tipos_permitidos:
-                penal = PENALIZACION_ESTACION_EQUIVOCA * infoTareas[tarea]['tiempo']
-                return penal
-
-def evaluar_precedencias(estaciones, dependencias, infoTareas):
-    orden_global = [t for est in estaciones for t in est]
-    pos = {t:i for i,t in enumerate(orden_global)}
+def evaluar_precedencias(individuo, dependencias, infoTareas):
+    pos = {t: i for i, t in enumerate(individuo)}
     penal = 0
     for tarea, deps in dependencias.items():
         for d in deps:
-            if pos[d] > pos[tarea]:
+            # Si la tarea depende de otra que aparece después en el individuo
+            # penalizamos por la violación de la precedencia
+            if pos.get(d, -1) > pos.get(tarea, -1):
                 penal += PENALIZACION_PRECEDENCIA * infoTareas[tarea]['tiempo']
     return penal
 
-def evaluar_exceso_tareas(estaciones):
-    penal = 0
-    for est in estaciones:
-        exceso = max(0, len(est) - MAX_TAREAS_POR_ESTACION)
-        penal += exceso * PENALIZACION_EXCESO_TAREAS
-    return penal
+def evaluar_balanceo(individuo, infoTareas):
+    num_estaciones = 5
+    tam_estacion = len(individuo) // num_estaciones
+    cargas = []
 
-def evaluar_balanceo(estaciones, infoTareas):
-    cargas = [sum(infoTareas[t]['tiempo'] for t in est) for est in estaciones]
+    for i in range(num_estaciones):
+        inicio = i * tam_estacion
+        fin = (i + 1) * tam_estacion if i < num_estaciones - 1 else len(individuo)
+        estacion = individuo[inicio:fin]
+
+        carga = sum(infoTareas[t]['tiempo'] for t in estacion)
+        cargas.append(carga)
+
     desv = np.std(cargas)
+    #print("Cargas por estación:", cargas)
+    #print("Desviación estándar:", desv)
     return desv * PENALIZACION_DESEQUILIBRIO
 
-def evaluar_estaciones_vacias(estaciones):
-    penal = 0
-    estvoid = 0
-    for est in estaciones:
-        if len(est) == 0:
-            estvoid += 1
-    penal += estvoid * PENALIZACION_ESTACION_VACIA
-    return penal
-
-def evaluar_makespan(estaciones, infoTareas):
-    cargas = [sum(infoTareas[t]['tiempo'] for t in est) for est in estaciones]
-    return max(cargas)
+def evaluar_makespan(individuo, infoTareas):
+    # Suma total de tiempos (makespan simple)
+    return sum(infoTareas[t]['tiempo'] for t in individuo)

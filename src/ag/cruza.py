@@ -1,27 +1,18 @@
 import random
+'''toma la mitad de p1 y completa con tareas de p2 que no esten ya en el nuevo individuo'''
 
-#Half-Fixed + Random Completion
+def cruza(padre1, padre2, prob_cruza):
+    if random.random() > prob_cruza:
+        # No se cruzan y se devuelve una copia del padre1
+        return padre1.copy()
 
-#Mitad del padre 1 se hereda tal cual (posición + estación).
+    n = len(padre1)
+    mitad = n // 2
 
-#La otra mitad se rellena usando el padre 2, y asignándolas en estaciones aleatorias.
+    hijo = padre1[:mitad]
 
-def cruza(p1, p2, num_estaciones):
-    hijo = [[] for _ in range(num_estaciones)]
-    tareas_p1 = [t for est in p1 for t in est]
-    mitad = len(tareas_p1) // 2
-    usadas = set()
+    for tarea in padre2:
+        if tarea not in hijo:
+            hijo.append(tarea)
 
-    for i, t in enumerate(tareas_p1):
-        if i < mitad:
-            for e in range(num_estaciones):
-                if t in p1[e]:
-                    hijo[e].append(t)
-                    usadas.add(t)
-                    break
-    for est in p2:
-        for t in est:
-            if t not in usadas:
-                random.choice(hijo).append(t)
-                usadas.add(t)
     return hijo

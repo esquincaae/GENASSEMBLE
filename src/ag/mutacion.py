@@ -1,18 +1,12 @@
 import random
-import copy
 
-#Reubicación entre estaciones aleatoria.
+'''se hace una mutacion basada en permutas, tomando dos posiciones al azar'''
 
-def mutacion(hijo, num_estaciones):
-    nuevo = copy.deepcopy(hijo)
-    origenes = [i for i, est in enumerate(nuevo) if est]
-    if not origenes:
-        return nuevo
-    origen = random.choice(origenes)
-    destino = random.choice(range(num_estaciones))
-    if nuevo[origen]:
-        t = random.choice(nuevo[origen])
-        nuevo[origen].remove(t)
-        nuevo[destino].append(t)
-    return nuevo
+def mutacion(individuo, prob_mutacion):
+    individuo_mutado = individuo[:]
 
+    if random.random() < prob_mutacion:
+        i, j = random.sample(range(len(individuo_mutado)), 2)
+        individuo_mutado[i], individuo_mutado[j] = individuo_mutado[j], individuo_mutado[i]
+
+    return individuo_mutado

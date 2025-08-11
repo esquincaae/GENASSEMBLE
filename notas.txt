@@ -1,3 +1,0 @@
-diferenciar las estaciones
-cada estacion debe diferenciarse para hacer trabajos especificos
-hilos para el proceso de realizacion de tareas en estaciones especificas
