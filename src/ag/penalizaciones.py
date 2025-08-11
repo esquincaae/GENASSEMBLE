@@ -1,7 +1,7 @@
 import numpy as np
 
-PENALIZACION_PRECEDENCIA = 1
-PENALIZACION_DESEQUILIBRIO = 1
+PENALIZACION_PRECEDENCIA = 3
+PENALIZACION_DESEQUILIBRIO = 5
 
 def evaluar_precedencias(individuo, dependencias, infoTareas):
     pos = {t: i for i, t in enumerate(individuo)}
