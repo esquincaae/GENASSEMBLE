@@ -5,10 +5,11 @@ import pandas as pd
 
 tareas_df = pd.read_csv("data/tareas.csv")
 precedencias_df = pd.read_csv("data/precedencias.csv", index_col=0)
+sobrecarga_df = pd.read_csv("data/sobrecarga.csv")
 
 def iniciar_interfaz():
     def ejecutar_algoritmo():
-        global tareas_df, precedencias_df
+        global tareas_df, precedencias_df, sobrecarga_df
         estaciones = 5
         try:
             poblacion = int(entry_poblacion.get())
@@ -18,6 +19,10 @@ def iniciar_interfaz():
 
             if not (0 <= p_cruza <= 1 and 0 <= p_mutacion <= 1):
                 raise ValueError("Las probabilidades deben estar entre 0.0 y 1.0")
+
+            # Validar columnas de sobrecarga_df
+            if not {'Nombre', 'Tiempo', 'Tipo'}.issubset(sobrecarga_df.columns):
+                raise ValueError("El archivo de sobrecarga debe tener las columnas 'Nombre', 'Tiempo' y 'Tipo'.")
 
             # se valida que las columnas existan en tareas_df
             if not {'Nombre', 'Tiempo', 'Tipo'}.issubset(tareas_df.columns):
@@ -30,6 +35,13 @@ def iniciar_interfaz():
                     'tiempo': row['Tiempo'],
                     'tipo': row['Tipo']
                 } for _, row in tareas_df.iterrows()
+            }
+
+            sobrecarga = {
+                row['Tipo']: {
+                    'tiempo': row['Tiempo'],
+                    'Nombre': row['Nombre']
+                } for _, row in sobrecarga_df.iterrows()
             }
 
             # Construir diccionario de precedencias { tarea: [lista de tareas predecesoras] }
@@ -45,7 +57,7 @@ def iniciar_interfaz():
 
             #ejecuta el algoritmo genético con lista de tareas y precedencias
             mejor_individuo, evolucion = ejecutar_algoritmo_genetico(
-                nombresTareas, infoTareas, matPrecedencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion)
+nombresTareas, infoTareas, matPrecedencias, estaciones, poblacion, generaciones, p_cruza, p_mutacion, sobrecarga)
 
 
         except Exception as e:

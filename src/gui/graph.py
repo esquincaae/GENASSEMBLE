@@ -18,6 +18,15 @@ def agrupar_por_tipo(individuo, infoTareas, num_estaciones=None):
             estaciones = estaciones[:num_estaciones]
     return estaciones
 
+def sobrecargar_individuo(individuo, infoTareas, dependencias, sobrecarga):
+    pos = {t: i for i, t in enumerate(individuo)}
+    for tarea, deps in dependencias.items():
+        for d in deps:
+            if pos.get(d, -1) > pos.get(tarea, -1):
+                type_task = infoTareas[tarea]['tipo']
+                infoTareas[tarea]['tiempo'] += sobrecarga[type_task]['tiempo']
+    return individuo
+
 def graficar_evolucion(mejores):
     plt.figure(figsize=(10,5))
     plt.plot(mejores, label='Mejor fitness (makespan + penalizaciones)')
@@ -32,12 +41,7 @@ def graficar_evolucion(mejores):
 
 def graficar_gantt(individuo, infoTareas):
     
-    for i in range(0, len(individuo), 3):
-        if i == 0:
-            print("[", end=" ")
-        print(individuo[i:i+3])
-        if i + 3 >= len(individuo):
-            print("]", end=" ")
+    
     tipos = []
     for t in individuo:
         tipo = infoTareas[t]['tipo']
@@ -91,8 +95,8 @@ def graficar_gantt(individuo, infoTareas):
     plt.savefig('results/gantt_mejor_solucion.png')
     plt.show()
 
-def ventana_top_3(poblacion, infoTareas, dependencias, fitness_func):
-    top_3 = sorted(poblacion, key=lambda ind: fitness_func(ind, dependencias, infoTareas))[:3]
+def ventana_top_3(poblacion, infoTareas, dependencias, fitness_func, sobrecarga):
+    top_3 = sorted(poblacion, key=lambda ind: fitness_func(ind, dependencias, infoTareas, sobrecarga))[:3]
 
     ventana = tk.Toplevel()
     ventana.title("Top 3 mejores soluciones")
@@ -104,7 +108,7 @@ def ventana_top_3(poblacion, infoTareas, dependencias, fitness_func):
     texto.insert(tk.END, "Tabla con los 3 mejores resultados:\n\n")
 
     for i, ind in enumerate(top_3, start=1):
-        fitness_val = fitness_func(ind, dependencias, infoTareas)
+        fitness_val = fitness_func(ind, dependencias, infoTareas, sobrecarga)
         texto.insert(tk.END, f"🔹 Individuo {i} - Fitness total: {fitness_val:.2f}\n")
 
         estaciones = agrupar_por_tipo(ind, infoTareas)
@@ -121,13 +125,14 @@ def ventana_top_3(poblacion, infoTareas, dependencias, fitness_func):
 
     texto.config(state='disabled')
 
-def ventana_resumen_mejor(poblacion, infoTareas, dependencias, fitness_func):
-    mejor = min(poblacion, key=lambda ind: fitness_func(ind, dependencias, infoTareas))
+def ventana_resumen_mejor(poblacion, infoTareas, dependencias, fitness_func, sobrecarga):
+    individuo_sobrecargado = sobrecargar_individuo(poblacion[0], infoTareas, dependencias, sobrecarga)
+    mejor = min(poblacion, key=lambda ind: fitness_func(ind, dependencias, infoTareas, sobrecarga))
     estaciones = agrupar_por_tipo(mejor, infoTareas)
 
     cargas = [sum(infoTareas[t]['tiempo'] for t in tareas) for tareas in estaciones]
     makespan = sum(cargas) if cargas else 0
-    penalizaciones = fitness_func(mejor, dependencias, infoTareas) - makespan
+    sobrecargas = fitness_func(individuo_sobrecargado, dependencias, infoTareas, sobrecarga) - makespan
 
     ventana = tk.Toplevel()
     ventana.title("Resumen del mejor individuo")
@@ -147,6 +152,6 @@ def ventana_resumen_mejor(poblacion, infoTareas, dependencias, fitness_func):
             texto.insert(tk.END, f"   Estación {est_idx}: vacía\n")
 
     texto.insert(tk.END, f"\nMakespan total: {makespan}\n")
-    texto.insert(tk.END, f"Penalizaciones: {penalizaciones:.2f}\n")
+    texto.insert(tk.END, f"Sobre cargas: {sobrecargas:.2f}\n")
 
     texto.config(state='disabled')

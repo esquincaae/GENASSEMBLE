@@ -1,7 +1,7 @@
 import random
 from src.ag.fitness import fitness
 
-def poda(poblacion, dependencias, infoTareas, tam_poblacion):
+def poda(poblacion, dependencias, infoTareas, tam_poblacion, sobrecarga):
     # Eliminar duplicados usando tuplas para poder hash
     poblacion_unica = {}
     for ind in poblacion:
@@ -11,7 +11,7 @@ def poda(poblacion, dependencias, infoTareas, tam_poblacion):
     poblacion = list(poblacion_unica.values())
 
     # se ordena la población por fitness (menor es mejor)
-    poblacion.sort(key=lambda ind: fitness(ind, dependencias, infoTareas))
+    poblacion.sort(key=lambda ind: fitness(ind, dependencias, infoTareas, sobrecarga))
 
     mejor = poblacion[0] # se guarda el mejor individuo
 

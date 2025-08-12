@@ -3,15 +3,15 @@ Montar chasis,30,Montaje
 Colocar ejes,8,Montaje
 Montar puertas,15,Montaje
 Montar motor,10,Montaje
+Montar tablero,10,Montaje
 Conectar transmisión,20,Transmisión
 Calibrar transmisión,16,Transmisión
 Probar conexión de transmisión,15,Transmisión
 Instalar sistema eléctrico,20,Eléctrico
 Conectar sensores de reversa,10,Eléctrico
 Probar luces interiores,12,Eléctrico
-Instalar tablero,10,Montaje
 Aplicar capa de pintura,10,Pintura
 Aplicar barniz final,10,Pintura
 Verificación final,30,Verificación
-Revisar sistema de frenos,18,Verificación
+Verificar transmisión,18,Verificación
 Verificar sistema de iluminación,15,Verificación

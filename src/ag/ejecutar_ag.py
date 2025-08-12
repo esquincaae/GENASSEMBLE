@@ -10,7 +10,7 @@ import copy
 import random
 
 def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, num_estaciones,
-                                tam_poblacion, num_generaciones, prob_cruza, prob_mutacion):
+                                tam_poblacion, num_generaciones, prob_cruza, prob_mutacion, sobrecarga):
 
     poblacion = [generar_individuo(tareas, num_estaciones, infoTareas) for _ in range(tam_poblacion)]
     mejor_fitness = float('inf')
@@ -43,12 +43,12 @@ def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, num_estaciones
         poblacion.extend(nueva_poblacion)
 
         # Poda para mantener tamaño poblacional
-        poblacion = poda(poblacion, dependencias, infoTareas, tam_poblacion)
+        poblacion = poda(poblacion, dependencias, infoTareas, tam_poblacion, sobrecarga)
 
         # Ordenar población según fitness (menor es mejor)
-        poblacion.sort(key=lambda ind: fitness(ind, dependencias, infoTareas))
+        poblacion.sort(key=lambda ind: fitness(ind, dependencias, infoTareas, sobrecarga))
 
-        fit_actual = fitness(poblacion[0], dependencias, infoTareas, poblacion)
+        fit_actual = fitness(poblacion[0], dependencias, infoTareas, sobrecarga)
         evolucion.append(fit_actual)
 
         if fit_actual < mejor_fitness:
@@ -58,7 +58,7 @@ def ejecutar_algoritmo_genetico(tareas, infoTareas, dependencias, num_estaciones
     # Graficar evolución y resultados
     graph.graficar_evolucion(evolucion)
     graph.graficar_gantt(mejor_individuo, infoTareas)
-    graph.ventana_top_3(poblacion, infoTareas, dependencias, fitness)
-    graph.ventana_resumen_mejor(poblacion, infoTareas, dependencias, fitness)
+    graph.ventana_top_3(poblacion, infoTareas, dependencias, fitness, sobrecarga)
+    graph.ventana_resumen_mejor(poblacion, infoTareas, dependencias, fitness, sobrecarga)
 
     return mejor_individuo, evolucion

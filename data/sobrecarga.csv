@@ -1,0 +1,6 @@
+Nombre,Tiempo,Tipo
+Desmontar pieza previa,15,Montaje
+Deshacer accion previa,20,Transmisión
+Quitar componentes electrónicos,14,Eléctrico
+Remover acabado,10,Pintura
+Deshacer acciones finales,21,Verificación
